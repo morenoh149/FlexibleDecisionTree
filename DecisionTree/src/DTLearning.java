@@ -37,26 +37,26 @@ public class DTLearning extends Node{
 	 * given a dataset and an attribute index, calculate the entropy value of splitting
 	 * on that attribute
 	 */
-	int entropy(int attribute, List<String[]> dataset){
-		Map<String, Integer> map = new HashMap<String, Integer>();
-		String[] firstrow = dataset.get(0);
-		// count the occurrences of each value
-		for (String sequence : dataset) {
-			if (!map.containsKey(sequence)) {
-				map.put(sequence, 0);
-			}
-			map.put(sequence, map.get(sequence) + 1);
-		}
-
-		// calculate the entropy
-		Double result = 0.0;
-		for (String sequence : map.keySet()) {
-			Double frequency = (double) map.get(sequence) / values.size();
-			result -= frequency * (Math.log(frequency) / Math.log(2));
-		}
-
-		return result;
-	}
+//	int entropy(int attribute, List<String[]> dataset){
+//		Map<String, Integer> map = new HashMap<String, Integer>();
+//		String[] firstrow = dataset.get(0);
+//		// count the occurrences of each value
+//		for (String sequence : dataset) {
+//			if (!map.containsKey(sequence)) {
+//				map.put(sequence, 0);
+//			}
+//			map.put(sequence, map.get(sequence) + 1);
+//		}
+//
+//		// calculate the entropy
+//		Double result = 0.0;
+//		for (String sequence : map.keySet()) {
+//			Double frequency = (double) map.get(sequence) / values.size();
+//			result -= frequency * (Math.log(frequency) / Math.log(2));
+//		}
+//
+//		return result;
+//	}
 	
 	/**
 	 * given a dataset, return the index of the most important attribute
@@ -66,7 +66,7 @@ public class DTLearning extends Node{
 		//index, entropy value
 		HashMap<Integer, Integer> importanceValues = new HashMap<Integer, Integer>();
 		for(int i=0; i<firstrow.length; i++){
-			importanceValues.put(i, entropy(i,dataset));
+//			importanceValues.put(i, entropy(i,dataset));
 		}
 		int max = 0;
 		for(int i=0; i<importanceValues.size(); i++){
