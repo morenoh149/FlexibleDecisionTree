@@ -25,7 +25,7 @@ public class Solution {
 		String[] header = dataset.get(0);
 		int numOfAttributes = header.length;
 		dataset = dataset.subList(1, dataset.size());
-		DTLearning algorithm = new DTLearning(dataset, numOfAttributes, null);
+		DTLearning algorithm = new DTLearning(dataset, numOfAttributes);
 		System.out.println(algorithm.toString());
 	}
 }
