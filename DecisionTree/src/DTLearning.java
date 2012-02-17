@@ -14,7 +14,7 @@ public class DTLearning extends Node{
 		this.numOfAttributes = attributes;
 		this.children = new ArrayList<Node>();
 		this.depth = 1;
-		sb = new StringBuilder();
+		sb = new StringBuilder("begin tree \n");
 		classify(dataset,attributes);
 	}
 
