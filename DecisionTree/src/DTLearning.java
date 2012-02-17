@@ -41,7 +41,7 @@ public class DTLearning extends Node{
 	
 	private double entropy(int attribute, List<String[]> dataset){
 		double result = 0;
-		List<Integer> resul\ts = new ArrayList<Integer>(0);
+		List<Integer> results = new ArrayList<Integer>(0);
 		List<List<String[]>> sorted = new ArrayList<List<String[]>>(0);
 		List<String> category = new ArrayList<String>(0);
 		int total = dataset.size(); 
