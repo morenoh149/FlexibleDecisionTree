@@ -7,11 +7,14 @@ import java.util.*;
  */
 public class DTLearning extends Node{
 	int numOfAttributes;
+	StringBuilder sb;
 
 	DTLearning(List<String[]> dataset, int attributes){
 		this.parent = null;
 		this.numOfAttributes = attributes;
 		this.children = new ArrayList<Node>();
+		this.depth = 1;
+		sb = new StringBuilder();
 		classify(dataset,attributes);
 	}
 
@@ -19,6 +22,7 @@ public class DTLearning extends Node{
 		this.parent = parent;
 		this.numOfAttributes = attributes;
 		this.children = new ArrayList<Node>();
+		this.depth = parent.depth + 1;
 		//System.out.println("created child!");
 	}
 
@@ -30,15 +34,27 @@ public class DTLearning extends Node{
 	void classify(List<String[]> dataset, int attributes){
 		if(dataset.isEmpty()){
 			this.pluralityValue = parent.pluralityValue;
+			for(int i=0; i<depth-1; i++){
+				sb.append(" ");
+			}
+			sb.append(this.pluralityValue+"\n");
 		}
 		else if(sameClass(dataset)){
 			String[] first = dataset.get(0);
 			this.pluralityValue = first[first.length-1];
+			for(int i=0; i<depth-1; i++){
+				sb.append(" ");
+			}
+			sb.append(this.pluralityValue+"\n");
 		}
 		else{
 			int indexOfImportantAttribute = importance(dataset);
 			if(indexOfImportantAttribute == -1){
 				this.pluralityValue = finalResolution(dataset);
+				for(int i=0; i<depth-1; i++){
+					sb.append(" ");
+				}
+				sb.append(this.pluralityValue+"\n");
 			}
 			else{
 			System.out.println("important value: "+indexOfImportantAttribute);
@@ -209,6 +225,7 @@ public class DTLearning extends Node{
 			sum = sum + ((hold/(double)total)*entropy(sel));
 		}
 		result = result - sum;
+		System.out.println("result is: "+result);
 		return result;
 	}
 
@@ -305,11 +322,6 @@ public class DTLearning extends Node{
 	 * best run on the root
 	 */
 	public String toString(){
-		StringBuilder sb = new StringBuilder();
-		for(Node child : children){
-			sb.append(child.pluralityValue);
-			sb.append(child.toString());
-		}
 		return sb.toString();
 	}
 }
