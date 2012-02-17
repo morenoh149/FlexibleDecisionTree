@@ -134,7 +134,7 @@ public class DTLearning extends Node{
 			if(category.size()==0){     // check if the attribute holder is empty to add stuff
 				category.add(select[attribute]);      //adds our atrbuite to the log
 				sorted.add(new ArrayList<String[]>(0)); //initialize storage for string arrays
-				sorted.get(1).add(select);           // add our string to the stored set by similar attribute
+				sorted.get(0).add(select);           // add our string to the stored set by similar attribute
 			}else{                       //the attribute holder is not empty so see if our attribute is already logged
 				contanined=false;
 				count = 1;
