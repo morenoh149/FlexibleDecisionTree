@@ -17,6 +17,7 @@ public class DTLearning extends Node{
 	DTLearning(List<String[]> dataset, int attributes, DTLearning parent){
 		this.parent = parent;
 		this.numOfAttributes = attributes;
+		System.out.println("created child!");
 	}
 
 	/**
@@ -100,6 +101,7 @@ public class DTLearning extends Node{
 	 */
 
 	private int importance(List<String[]> dataset){
+		System.out.println("determining importance");
 		int ret = 0;
 		int attributes = dataset.get(1).length-1;
 		List<Double> Imps = new ArrayList<Double>(0);
@@ -121,6 +123,7 @@ public class DTLearning extends Node{
 	
 	
 	private double informationGain(int attribute, List<String[]> dataset){
+		//System.out.println("gaining info");
 		double result = 0;
 		List<Integer> results = new ArrayList<Integer>(0);
 		List<List<String[]>> sorted = new ArrayList<List<String[]>>(0);
