@@ -91,6 +91,44 @@ public class DTLearning extends Node{
 		}
 		return attributeMap;
 	}
+	
+	private String finalResolution(List<String[]> dataset){
+		int count;
+		boolean found;
+		List<String> names = new ArrayList<String>(0);
+		List<Integer> counts = new ArrayList<Integer>(0);
+		for(String[] select : dataset){
+			count = 0;
+			found = false;
+			for(String sel : names){
+				if(sel.equals(select[0])){
+					counts.set(count, counts.get(count)+1);
+					found=true;
+				}
+				count++;
+			}
+			if(found==false){
+				names.add(select[0]);
+				counts.add(1);
+			}
+		}
+		int max = 0;
+		count=0;
+		int loc = 0;
+		boolean multi = false;
+		for(int temp : counts){
+			if(temp==max){
+				multi = true;
+			}
+			if(temp>max){
+				max = temp;
+				multi = false;
+				loc = count;
+			}
+			count++;
+		}
+		return names.get(loc);
+	}
 
 	/**
 	 * given a dataset and an attribute index, calculate the entropy value of splitting
@@ -123,7 +161,6 @@ public class DTLearning extends Node{
 		}
 		return ret;
 	}
-
 
 	private double informationGain(int attribute, List<String[]> dataset){
 		//System.out.println("gaining info");
@@ -187,7 +224,7 @@ public class DTLearning extends Node{
 				count = 0;
 				for(String temp : category){
 					if(temp.equals(select[end])){
-						results.set(count, results.get(count));
+						results.set(count, results.get(count)+1);
 						found=true;
 					}
 				}
