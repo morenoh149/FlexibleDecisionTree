@@ -8,10 +8,11 @@ import java.util.*;
 public class DTLearning extends Node{
 	int numOfAttributes;
 	StringBuilder sb;
+	List<String[]> Dataset;
 
 	DTLearning(List<String[]> dataset, int attributes){
 		this.parent = null;
-		List<String[]> Dataset=dataset;
+		this.Dataset=dataset;
 		this.numOfAttributes = attributes;
 		this.children = new ArrayList<Node>();
 		this.depth = 1;
@@ -22,13 +23,14 @@ public class DTLearning extends Node{
 	DTLearning(List<String[]> dataset, int attributes, DTLearning parent){
 		this.parent = parent;
 		this.numOfAttributes = attributes;
-		List<String[]> Dataset=dataset;
+		this.Dataset=dataset;
+		System.out.println("datset is: "+Dataset.get(0).length);
 		this.children = new ArrayList<Node>();
 		this.depth = parent.depth + 1;
 		//System.out.println("created child!");
 	}
 
-	public ArrayList<Node> buildChildren(List<String[]> dataset, int attributes){
+	public void buildChildren(List<String[]> dataset, int attributes){
 		
 	}
 	
@@ -227,7 +229,7 @@ public class DTLearning extends Node{
 			sum = sum + ((hold/(double)total)*entropy(sel));
 		}
 		result = result - sum;
-		System.out.println("result is: "+result);
+		//System.out.println("result is: "+result);
 		return result;
 	}
 
