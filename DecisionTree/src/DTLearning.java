@@ -14,7 +14,7 @@ public class DTLearning extends Node{
 		this.children = new ArrayList<Node>();
 		classify(dataset,attributes);
 	}
-	
+
 	DTLearning(List<String[]> dataset, int attributes, DTLearning parent){
 		this.parent = parent;
 		this.numOfAttributes = attributes;
@@ -97,7 +97,7 @@ public class DTLearning extends Node{
 		}
 		return attributeMap;
 	}
-	
+
 	/**
 	 * given a dataset and an attribute index, calculate the entropy value of splitting
 	 * on that attribute
@@ -110,23 +110,27 @@ public class DTLearning extends Node{
 		System.out.println("Number of attributes = "+attributes);
 		List<Double> Imps = new ArrayList<Double>(0);
 		int i = 0;
-		while(i<attributes){
-			Imps.add(informationGain(i, dataset));
-			i++;
-		}
-		double max = Imps.get(0);
-		int count = 0;
-		for(double test : Imps){
-			if(test>max){
-			max = test;
-			ret = count;
+		if(attributes!=0){
+			while(i<attributes){
+				Imps.add(informationGain(i, dataset));
+				i++;
 			}
-			count++;
+			double max = Imps.get(0);
+			int count = 0;
+			for(double test : Imps){
+				if(test>max){
+					max = test;
+					ret = count;
+				}
+				count++;
+			}
+		}else{
+			ret = -1;
 		}
 		return ret;
 	}
-	
-	
+
+
 	private double informationGain(int attribute, List<String[]> dataset){
 		//System.out.println("gaining info");
 		double result = 0;
@@ -170,8 +174,8 @@ public class DTLearning extends Node{
 		result = result - sum;
 		return result;
 	}
-	
-	
+
+
 	public double entropy(List<String[]> dataset){
 		int total = dataset.size();
 		int end;
@@ -205,45 +209,45 @@ public class DTLearning extends Node{
 		}
 		return I;
 	}
-	
-//	int entropy(int attribute, List<String[]> dataset){
-//		Map<String, Integer> map = new HashMap<String, Integer>();
-//		String[] firstrow = dataset.get(0);
-//		// count the occurrences of each value
-//		for (String sequence : dataset) {
-//			if (!map.containsKey(sequence)) {
-//				map.put(sequence, 0);
-//			}
-//			map.put(sequence, map.get(sequence) + 1);
-//		}
-//
-//		// calculate the entropy
-//		Double result = 0.0;
-//		for (String sequence : map.keySet()) {
-//			Double frequency = (double) map.get(sequence) / values.size();
-//			result -= frequency * (Math.log(frequency) / Math.log(2));
-//		}
-//
-//		return result;
-//	}
-	
+
+	//	int entropy(int attribute, List<String[]> dataset){
+	//		Map<String, Integer> map = new HashMap<String, Integer>();
+	//		String[] firstrow = dataset.get(0);
+	//		// count the occurrences of each value
+	//		for (String sequence : dataset) {
+	//			if (!map.containsKey(sequence)) {
+	//				map.put(sequence, 0);
+	//			}
+	//			map.put(sequence, map.get(sequence) + 1);
+	//		}
+	//
+	//		// calculate the entropy
+	//		Double result = 0.0;
+	//		for (String sequence : map.keySet()) {
+	//			Double frequency = (double) map.get(sequence) / values.size();
+	//			result -= frequency * (Math.log(frequency) / Math.log(2));
+	//		}
+	//
+	//		return result;
+	//	}
+
 	/**
 	 * given a dataset, return the index of the most important attribute
 	 */
-//	int importance(List<String[]> dataset){
-//		String[] firstrow = dataset.get(0);
-//		//index, entropy value
-//		HashMap<Integer, Integer> importanceValues = new HashMap<Integer, Integer>();
-//		for(int i=0; i<firstrow.length; i++){
-////			importanceValues.put(i, entropy(i,dataset));
-//		}
-//		int max = 0;
-//		for(int i=0; i<importanceValues.size(); i++){
-//			if(importanceValues.get(i)>max)
-//				max = i;
-//		}
-//		return max;
-//	}
+	//	int importance(List<String[]> dataset){
+	//		String[] firstrow = dataset.get(0);
+	//		//index, entropy value
+	//		HashMap<Integer, Integer> importanceValues = new HashMap<Integer, Integer>();
+	//		for(int i=0; i<firstrow.length; i++){
+	////			importanceValues.put(i, entropy(i,dataset));
+	//		}
+	//		int max = 0;
+	//		for(int i=0; i<importanceValues.size(); i++){
+	//			if(importanceValues.get(i)>max)
+	//				max = i;
+	//		}
+	//		return max;
+	//	}
 
 	/**
 	 * returns true if the given list is all of the same class,
@@ -265,10 +269,10 @@ public class DTLearning extends Node{
 	 */
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
-	    for(Node child : children){
-	    	sb.append(child.pluralityValue);
-	    	sb.append(child.toString());
-	    }
-	    return sb.toString();
+		for(Node child : children){
+			sb.append(child.pluralityValue);
+			sb.append(child.toString());
+		}
+		return sb.toString();
 	}
 }
