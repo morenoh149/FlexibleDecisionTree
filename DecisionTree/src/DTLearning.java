@@ -137,7 +137,7 @@ public class DTLearning extends Node{
 				sorted.get(0).add(select);           // add our string to the stored set by similar attribute
 			}else{                       //the attribute holder is not empty so see if our attribute is already logged
 				contanined=false;
-				count = 1;
+				count = 0;
 				for(String check : category){
 					if(check.equals(temp)){
 						sorted.get(count).add(select);
@@ -178,7 +178,7 @@ public class DTLearning extends Node{
 				results.add(1);
 			}else{
 				found=false;
-				count = 1;
+				count = 0;
 				for(String temp : category){
 					if(temp.equals(select[end])){
 						results.set(count, results.get(count)+1);
