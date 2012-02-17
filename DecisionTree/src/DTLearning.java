@@ -57,16 +57,16 @@ public class DTLearning extends Node{
 				sb.append(this.pluralityValue+"\n");
 			}
 			else{
-			System.out.println("important value: "+indexOfImportantAttribute);
-			HashMap<String, Integer> attributeMap = countAttribute(indexOfImportantAttribute, dataset);
-			for(String atr : attributeMap.keySet()){
-				List<String[]> split = makeSplit(atr, indexOfImportantAttribute, dataset);
-				if(!split.isEmpty()){
-					DTLearning newChild = new DTLearning(dataset, numOfAttributes-1, this);
-					this.children.add(newChild);
+				System.out.println("important value: "+indexOfImportantAttribute);
+				HashMap<String, Integer> attributeMap = countAttribute(indexOfImportantAttribute, dataset);
+				for(String atr : attributeMap.keySet()){
+					List<String[]> split = makeSplit(atr, indexOfImportantAttribute, dataset);
+					if(!split.isEmpty()){
+						DTLearning newChild = new DTLearning(dataset, numOfAttributes-1, this);
+						this.children.add(newChild);
+					}
+					classify(split, numOfAttributes-1);
 				}
-				classify(split, numOfAttributes-1);
-			}
 			}
 		}
 	}
@@ -113,7 +113,7 @@ public class DTLearning extends Node{
 		}
 		return attributeMap;
 	}
-	
+
 	private String finalResolution(List<String[]> dataset){
 		int count;
 		boolean found;
@@ -195,26 +195,20 @@ public class DTLearning extends Node{
 		int count = 0; //holds indexes
 		boolean contanined = false;
 		for(String[] select : dataset){ //go through all string arrays
-			temp = select[attribute];   // get the attribute we are working on
-			if(category.size()==0){     // check if the attribute holder is empty to add stuff
-				category.add(select[attribute]);      //adds our atrbuite to the log
-				sorted.add(new ArrayList<String[]>(0)); //initialize storage for string arrays
-				sorted.get(0).add(select);           // add our string to the stored set by similar attribute
-			}else{                       //the attribute holder is not empty so see if our attribute is already logged
-				contanined=false;
-				count = 0;
-				for(String check : category){
-					if(check.equals(temp)){
-						sorted.get(count).add(select);
-						contanined = true;
-					}
-					count++;
-				}
-				if(contanined==false){
-					category.add(select[attribute]);
-					sorted.add(new ArrayList<String[]>(0));
+			temp = select[attribute];                  //the attribute holder is not empty so see if our attribute is already logged
+			contanined=false;
+			count = 0;
+			for(String check : category){
+				if(check.equals(temp)){
 					sorted.get(count).add(select);
+					contanined = true;
 				}
+				count++;
+			}
+			if(contanined==false){
+				category.add(select[attribute]);
+				sorted.add(new ArrayList<String[]>(0));
+				sorted.get(count).add(select);
 			}
 		}
 		result = 1;
