@@ -11,13 +11,15 @@ public class DTLearning extends Node{
 	DTLearning(List<String[]> dataset, int attributes){
 		this.parent = null;
 		this.numOfAttributes = attributes;
+		this.children = new ArrayList<Node>();
 		classify(dataset,attributes);
 	}
 	
 	DTLearning(List<String[]> dataset, int attributes, DTLearning parent){
 		this.parent = parent;
 		this.numOfAttributes = attributes;
-		System.out.println("created child!");
+		this.children = new ArrayList<Node>();
+		//System.out.println("created child!");
 	}
 
 	/**
@@ -31,26 +33,21 @@ public class DTLearning extends Node{
 		}
 		else if(sameClass(dataset)){
 			String[] first = dataset.get(0);
-			this.pluralityValue = first[first.length];
+			this.pluralityValue = first[first.length-1];
 		}
 		else{
 			int indexOfImportantAttribute = importance(dataset);
+			System.out.println("important value: "+indexOfImportantAttribute);
 			HashMap<String, Integer> attributeMap = countAttribute(indexOfImportantAttribute, dataset);
 			for(String atr : attributeMap.keySet()){
 				List<String[]> split = makeSplit(atr, indexOfImportantAttribute, dataset);
 				if(!split.isEmpty()){
-					this.addChild(split);
+					DTLearning newChild = new DTLearning(dataset, numOfAttributes-1, this);
+					this.children.add(newChild);
 				}
 				classify(split, numOfAttributes-1);
 			}
 		}
-	}
-	/**
-	 * adds the given dataset as a child of the current node
-	 * assumes the dataset is nonempty
-	 */
-	void addChild(List<String[]> dataset){
-		this.children.add(new DTLearning(dataset, numOfAttributes-1, this));
 	}
 	/**
 	 * returns a dataset without the splitting attribute
@@ -104,13 +101,14 @@ public class DTLearning extends Node{
 		System.out.println("determining importance");
 		int ret = 0;
 		int attributes = dataset.get(0).length-1;
+		System.out.println("Number of attributes = "+attributes);
 		List<Double> Imps = new ArrayList<Double>(0);
 		int i = 0;
 		while(i<attributes){
 			Imps.add(informationGain(i, dataset));
 			i++;
 		}
-		double max = Imps.get(1);
+		double max = Imps.get(0);
 		int count = 0;
 		for(double test : Imps){
 			if(test>max){
