@@ -39,7 +39,7 @@ public class DTLearning extends Node{
 	 * on that attribute
 	 */
 	
-	private double entropy(int attribute, List<String[]> dataset){
+	private double informationGain(int attribute, List<String[]> dataset){
 		double result = 0;
 		List<Integer> results = new ArrayList<Integer>(0);
 		List<List<String[]>> sorted = new ArrayList<List<String[]>>(0);
@@ -76,14 +76,14 @@ public class DTLearning extends Node{
 		double hold;
 		for(List<String[]> sel : sorted){
 			hold = sel.size();
-			sum = sum + ((hold/(double)total)*importance(sel));
+			sum = sum + ((hold/(double)total)*entropy(sel));
 		}
 		result = result - sum;
 		return result;
 	}
 	
 	
-	public double importance(List<String[]> dataset){
+	public double entropy(List<String[]> dataset){
 		int total = dataset.size();
 		int end;
 		int count;
