@@ -98,6 +98,27 @@ public class DTLearning extends Node{
 	 * given a dataset and an attribute index, calculate the entropy value of splitting
 	 * on that attribute
 	 */
+
+	private int Importance(List<String[]> dataset){
+		int ret = 0;
+		int attributes = dataset.get(1).length-1;
+		List<Double> Imps = new ArrayList<Double>(0);
+		int i = 0;
+		while(i<attributes){
+			Imps.add(informationGain(i, dataset));
+		}
+		double max = Imps.get(1);
+		int count = 0;
+		for(double test : Imps){
+			if(test>max){
+			max = test;
+			ret = count;
+			}
+			count++;
+		}
+		return ret;
+	}
+	
 	
 	private double informationGain(int attribute, List<String[]> dataset){
 		double result = 0;
