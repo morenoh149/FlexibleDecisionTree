@@ -11,21 +11,29 @@ public class DTLearning extends Node{
 
 	DTLearning(List<String[]> dataset, int attributes){
 		this.parent = null;
+		List<String[]> Dataset=dataset;
 		this.numOfAttributes = attributes;
 		this.children = new ArrayList<Node>();
 		this.depth = 1;
 		sb = new StringBuilder();
-		classify(dataset,attributes);
+		classify(Dataset,attributes);
 	}
 
 	DTLearning(List<String[]> dataset, int attributes, DTLearning parent){
 		this.parent = parent;
 		this.numOfAttributes = attributes;
+		List<String[]> Dataset=dataset;
 		this.children = new ArrayList<Node>();
 		this.depth = parent.depth + 1;
 		//System.out.println("created child!");
 	}
 
+	public ArrayList<Node> buildChildren(List<String[]> dataset, int attributes){
+		
+	}
+	
+	
+	
 	/**
 	 * runs the decision-tree-learning algorithm
 	 * @param dataset
@@ -233,22 +241,17 @@ public class DTLearning extends Node{
 		List<String> category = new ArrayList<String>(0);
 		for(String[] select : dataset){
 			end = select.length-1;
-			if(category.size()==0){
-				category.add(select[end]);
+			found=false;
+			count = 0;
+			for(String temp : category){
+				if(temp.equals(select[end])){
+					results.set(count, results.get(count)+1);
+					found=true;
+				}
+			}
+			if(found==false){
 				results.add(1);
-			}else{
-				found=false;
-				count = 0;
-				for(String temp : category){
-					if(temp.equals(select[end])){
-						results.set(count, results.get(count)+1);
-						found=true;
-					}
-				}
-				if(found==false){
-					results.add(1);
-					category.add(select[end]);
-				}
+				category.add(select[end]);
 			}
 		}
 		double I = 0;
