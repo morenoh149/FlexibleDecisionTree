@@ -181,7 +181,7 @@ public class DTLearning extends Node{
 				count = 0;
 				for(String temp : category){
 					if(temp.equals(select[end])){
-						results.set(count, results.get(count)+1);
+						results.set(count, results.get(count));
 						found=true;
 					}
 				}
