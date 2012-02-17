@@ -1,9 +1,4 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * decision tree learning takes place here,
@@ -12,10 +7,16 @@ import java.util.Map;
  */
 public class DTLearning extends Node{
 	String finaltree;
+	int numOfAttributes;
 
 	DTLearning(List<String[]> dataset, int attributes){
 		this.parent = null;
+		this.numOfAttributes = attributes;
 		classify(dataset,attributes);
+	}
+	DTLearning(List<String[]> dataset, int attributes, DTLearning parent){
+		this.parent = parent;
+		this.numOfAttributes = attributes;
 	}
 
 	/**
@@ -35,11 +36,20 @@ public class DTLearning extends Node{
 			int indexOfImportantAttribute = importance(dataset);
 			HashMap<String, Integer> attributeMap = countAttribute(indexOfImportantAttribute, dataset);
 			for(String atr : attributeMap.keySet()){
-				List<String[]> split = makeSplit(attributeMap.get(atr), indexOfImportantAttribute, dataset);
-				if(!split.isEmpty())
+				List<String[]> split = makeSplit(atr, indexOfImportantAttribute, dataset);
+				if(!split.isEmpty()){
 					this.addChild(split);
+				}
+				classify(split, numOfAttributes-1);
 			}
 		}
+	}
+	/**
+	 * adds the given dataset as a child of the current node
+	 * assumes the dataset is nonempty
+	 */
+	void addChild(List<String[]> dataset){
+		this.children.add(new DTLearning(dataset, numOfAttributes-1, this));
 	}
 	/**
 	 * returns a dataset without the splitting attribute
@@ -61,10 +71,14 @@ public class DTLearning extends Node{
 	String[] removeAtr(String[] row, int index){
 		String[] newrow = new String[row.length-1];
 		for(int i=0; i<row.length; i++){
-			if(i!=index){
-				
+			if(i<index){
+				newrow[i] = row[i];
+			}
+			if(i>index){
+				newrow[i-1] = row[i];
 			}
 		}
+		return newrow;
 	}
 	/**
 	 * returns Map of unique values for the given index in the dataset
