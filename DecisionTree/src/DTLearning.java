@@ -6,7 +6,6 @@ import java.util.*;
  *
  */
 public class DTLearning extends Node{
-	String finaltree;
 	int numOfAttributes;
 
 	DTLearning(List<String[]> dataset, int attributes){
@@ -14,6 +13,7 @@ public class DTLearning extends Node{
 		this.numOfAttributes = attributes;
 		classify(dataset,attributes);
 	}
+	
 	DTLearning(List<String[]> dataset, int attributes, DTLearning parent){
 		this.parent = parent;
 		this.numOfAttributes = attributes;
@@ -99,7 +99,7 @@ public class DTLearning extends Node{
 	 * on that attribute
 	 */
 
-	private int Importance(List<String[]> dataset){
+	private int importance(List<String[]> dataset){
 		int ret = 0;
 		int attributes = dataset.get(1).length-1;
 		List<Double> Imps = new ArrayList<Double>(0);
@@ -235,7 +235,7 @@ public class DTLearning extends Node{
 //				max = i;
 //		}
 //		return max;
-	}
+//	}
 
 	/**
 	 * returns true if the given list is all of the same class,
@@ -244,11 +244,23 @@ public class DTLearning extends Node{
 	boolean sameClass(List<String[]> dataset){
 		String[] first = dataset.get(0);
 		int lastindex = first.length;
-		String target = first[lastindex];
+		String target = first[lastindex-1];
 		for(String[] row : dataset){
-			if(row[lastindex]!= target)
+			if(row[lastindex-1]!= target)
 				return false;
 		}
 		return true;
+	}
+	/**
+	 * returns string representation of the current node
+	 * best run on the root
+	 */
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+	    for(Node child : children){
+	    	sb.append(child.pluralityValue);
+	    	sb.append(child.toString());
+	    }
+	    return sb.toString();
 	}
 }
