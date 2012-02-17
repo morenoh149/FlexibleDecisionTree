@@ -101,11 +101,12 @@ public class DTLearning extends Node{
 
 	private int importance(List<String[]> dataset){
 		int ret = 0;
-		int attributes = dataset.get(1).length-1;
+		int attributes = dataset.get(0).length-1;
 		List<Double> Imps = new ArrayList<Double>(0);
 		int i = 0;
 		while(i<attributes){
 			Imps.add(informationGain(i, dataset));
+			i++;
 		}
 		double max = Imps.get(1);
 		int count = 0;
