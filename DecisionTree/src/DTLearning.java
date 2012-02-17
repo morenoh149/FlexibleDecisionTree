@@ -37,6 +37,10 @@ public class DTLearning extends Node{
 		}
 		else{
 			int indexOfImportantAttribute = importance(dataset);
+			if(indexOfImportantAttribute == -1){
+				this.pluralityValue = finalResolution(dataset);
+			}
+			else{
 			System.out.println("important value: "+indexOfImportantAttribute);
 			HashMap<String, Integer> attributeMap = countAttribute(indexOfImportantAttribute, dataset);
 			for(String atr : attributeMap.keySet()){
@@ -46,6 +50,7 @@ public class DTLearning extends Node{
 					this.children.add(newChild);
 				}
 				classify(split, numOfAttributes-1);
+			}
 			}
 		}
 	}
@@ -88,6 +93,7 @@ public class DTLearning extends Node{
 			if(!attributeMap.containsKey(row[index])){
 				attributeMap.put(row[index], 0);
 			}
+			attributeMap.put(row[index], attributeMap.get(row[index])+1);
 		}
 		return attributeMap;
 	}
