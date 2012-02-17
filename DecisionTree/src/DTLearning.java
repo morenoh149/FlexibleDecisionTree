@@ -1,11 +1,13 @@
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 /**
  * decision tree learning takes place here,
- * @author harry
+ * @author harry moreno
  *
  */
 public class DTLearning extends Node{
@@ -31,8 +33,53 @@ public class DTLearning extends Node{
 		}
 		else{
 			int indexOfImportantAttribute = importance(dataset);
+			HashMap<String, Integer> attributeMap = countAttribute(indexOfImportantAttribute, dataset);
+			for(String atr : attributeMap.keySet()){
+				List<String[]> split = makeSplit(attributeMap.get(atr), indexOfImportantAttribute, dataset);
+				if(!split.isEmpty())
+					this.addChild(split);
+			}
 		}
 	}
+	/**
+	 * returns a dataset without the splitting attribute
+	 * returns and empty list if no row with that attribute found
+	 */
+	List<String[]> makeSplit(String value, int index, List<String[]> dataset){
+		List<String[]> resultList = new ArrayList<String[]>();
+		for(String[] row : dataset){
+			if(row[index].equals(value)){
+				String[] modifiedRow = removeAtr(row, index);
+				resultList.add(modifiedRow);
+			}
+		}
+		return resultList;
+	}
+	/**
+	 * removes the given attribute from a String array
+	 */
+	String[] removeAtr(String[] row, int index){
+		String[] newrow = new String[row.length-1];
+		for(int i=0; i<row.length; i++){
+			if(i!=index){
+				
+			}
+		}
+	}
+	/**
+	 * returns Map of unique values for the given index in the dataset
+	 * Map of size 2 for boolean
+	 */
+	HashMap<String, Integer> countAttribute(int index, List<String[]>dataset){
+		HashMap<String, Integer> attributeMap = new HashMap<String, Integer>();
+		for(String[] row : dataset){
+			if(!attributeMap.containsKey(row[index])){
+				attributeMap.put(row[index], 0);
+			}
+		}
+		return attributeMap;
+	}
+	
 	/**
 	 * given a dataset and an attribute index, calculate the entropy value of splitting
 	 * on that attribute
