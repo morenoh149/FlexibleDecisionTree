@@ -7,14 +7,13 @@ import java.util.*;
  */
 public class DTLearning extends Node{
 	int numOfAttributes;
-	StringBuilder sb;
 
 	DTLearning(List<String[]> dataset, int attributes){
 		this.parent = null;
 		this.numOfAttributes = attributes;
 		this.children = new ArrayList<Node>();
 		this.depth = 1;
-		sb = new StringBuilder("begin tree \n");
+		Solution.sb = new StringBuilder("begin tree \n");
 		classify(dataset,attributes);
 	}
 
@@ -35,26 +34,26 @@ public class DTLearning extends Node{
 		if(dataset.isEmpty()){
 			this.pluralityValue = parent.pluralityValue;
 			for(int i=0; i<depth-1; i++){
-				sb.append(" ");
+				Solution.sb.append("-");
 			}
-			sb.append(this.pluralityValue+"\n");
+			Solution.sb.append(this.pluralityValue+"\n");
 		}
 		else if(sameClass(dataset)){
 			String[] first = dataset.get(0);
 			this.pluralityValue = first[first.length-1];
 			for(int i=0; i<depth-1; i++){
-				sb.append(" ");
+				Solution.sb.append("-");
 			}
-			sb.append(this.pluralityValue+"\n");
+			Solution.sb.append("allsameclass"+this.pluralityValue+"\n");
 		}
 		else{
 			int indexOfImportantAttribute = importance(dataset);
 			if(indexOfImportantAttribute == -1){
 				this.pluralityValue = finalResolution(dataset);
 				for(int i=0; i<depth-1; i++){
-					sb.append(" ");
+					Solution.sb.append("-");
 				}
-				sb.append(this.pluralityValue+"\n");
+				Solution.sb.append("majority decision"+this.pluralityValue+"\n");
 			}
 			else{
 				System.out.println("important value: "+indexOfImportantAttribute);
@@ -216,6 +215,7 @@ public class DTLearning extends Node{
 		double hold;
 		for(List<String[]> sel : sorted){
 			hold = sel.size();
+			System.out.println("entropy sel: "+entropy(sel));
 			sum = sum + ((hold/(double)total)*entropy(sel));
 		}
 		result = result - sum;
@@ -310,12 +310,5 @@ public class DTLearning extends Node{
 				return false;
 		}
 		return true;
-	}
-	/**
-	 * returns string representation of the current node
-	 * best run on the root
-	 */
-	public String toString(){
-		return sb.toString();
 	}
 }

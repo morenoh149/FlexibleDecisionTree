@@ -14,6 +14,8 @@ import au.com.bytecode.opencsv.CSVReader;
  * @author ben leone
  */
 public class Solution {
+	static StringBuilder sb;
+	
 	public static void main(String[] args) throws IOException {
 		if (args.length < 1) {
 		    System.out.println("Usage: missing filename");
@@ -25,7 +27,8 @@ public class Solution {
 		String[] header = dataset.get(0);
 		int numOfAttributes = header.length;
 		dataset = dataset.subList(1, dataset.size());
+		
 		DTLearning algorithm = new DTLearning(dataset, numOfAttributes);
-		System.out.println(algorithm.toString());
+		System.out.println(sb.toString());
 	}
 }
