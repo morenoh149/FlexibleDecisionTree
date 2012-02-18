@@ -53,6 +53,7 @@ public class DTLearning{
 				match(removeAtr(input, this.split));
 			}
 		}
+		System.out.println("here");
 		return false;
 	}
 
