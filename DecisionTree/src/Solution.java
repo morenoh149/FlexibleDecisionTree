@@ -14,7 +14,6 @@ import au.com.bytecode.opencsv.CSVReader;
  * @author ben leone
  */
 public class Solution {
-	static StringBuilder sb;
 	
 	public static void main(String[] args) throws IOException {
 		if (args.length < 1) {
@@ -29,6 +28,6 @@ public class Solution {
 		dataset = dataset.subList(1, dataset.size());
 		
 		DTLearning algorithm = new DTLearning(dataset, numOfAttributes);
-		System.out.println(sb.toString());
+		System.out.println(algorithm.sb.toString());
 	}
 }

@@ -13,6 +13,9 @@ public class DTLearning{
 	String pluralityValue;
 	int depth;
 	StringBuilder sb;
+	int split;
+	String attr;
+	boolean terminal;
 
 	DTLearning(List<String[]> dataset, int attributes){
 		this.parent = null;
@@ -21,13 +24,15 @@ public class DTLearning{
 		this.children = new ArrayList<DTLearning>();
 		this.depth = 1;
 		this.sb = new StringBuilder();
+		attr = null;
 		buildChildren(Dataset,attributes);
 	}
 
-	DTLearning(List<String[]> dataset, int attributes, DTLearning parent){
+	DTLearning(List<String[]> dataset, int attributes, DTLearning parent, String attribute){
 		this.parent = parent;
 		this.numOfAttributes = attributes;
 		this.Dataset=dataset;
+		this.attr = attribute;
 		//System.out.println("datset is: "+Dataset.get(0).length);
 		this.children = new ArrayList<DTLearning>();
 		this.depth = parent.depth + 1;
@@ -37,26 +42,33 @@ public class DTLearning{
 
 	public void buildChildren(List<String[]> dataset, int attributes){
 		if(dataset.isEmpty()){
+			this.terminal=true;
 			return;
 		}
 		if(sameClass(dataset)){
+			this.terminal=true;
 			return;
 		}
 		if(dataset.get(0).length==1){
+			this.terminal = true;
 			return;
 		}
-
+		
 		int indexOfImportantAttribute = importance(dataset);
 		if(indexOfImportantAttribute == -1){
 			this.pluralityValue = finalResolution(dataset);
+			this.terminal = true;
+			
 		}
 		else{
 			System.out.println("important value: "+indexOfImportantAttribute);
+			this.split = indexOfImportantAttribute;
+			this.terminal = false;
 			HashMap<String, Integer> attributeMap = countAttribute(indexOfImportantAttribute, dataset);
 			for(String atr : attributeMap.keySet()){
 				List<String[]> split = makeSplit(atr, indexOfImportantAttribute, dataset);
 				if(!split.isEmpty()){
-					DTLearning newChild = new DTLearning(dataset, numOfAttributes-1, this);
+					DTLearning newChild = new DTLearning(dataset, numOfAttributes-1, this, atr);
 					this.children.add(newChild);
 				}
 				for(DTLearning chld : children){
@@ -78,7 +90,7 @@ public class DTLearning{
 		if(dataset.isEmpty()){
 			this.pluralityValue = parent.pluralityValue;
 			for(int i=0; i<depth-1; i++){
-				Solution.sb.append("-");
+				sb.append("-");
 			}
 			sb.append(this.pluralityValue+"\n");
 			System.out.println("empty");
@@ -88,7 +100,7 @@ public class DTLearning{
 			String[] first = dataset.get(0);
 			this.pluralityValue = first[first.length-1];
 			for(int i=0; i<depth-1; i++){
-				Solution.sb.append("-");
+				sb.append("-");
 			}
 			System.out.println("terminate");
 			sb.append(this.pluralityValue+"\n");
@@ -99,9 +111,9 @@ public class DTLearning{
 			if(indexOfImportantAttribute == -1){
 				this.pluralityValue = finalResolution(dataset);
 				for(int i=0; i<depth-1; i++){
-					Solution.sb.append("-");
+					sb.append("-");
 				}
-				Solution.sb.append("majority decision"+this.pluralityValue+"\n");
+				sb.append("majority decision"+this.pluralityValue+"\n");
 			}
 			else{
 				System.out.println("important value: "+indexOfImportantAttribute);
@@ -109,7 +121,7 @@ public class DTLearning{
 				for(String atr : attributeMap.keySet()){
 					List<String[]> split = makeSplit(atr, indexOfImportantAttribute, dataset);
 					if(!split.isEmpty()){
-						DTLearning newChild = new DTLearning(dataset, numOfAttributes-1, this);
+						DTLearning newChild = new DTLearning(dataset, numOfAttributes-1, this, attr);
 						this.children.add(newChild);
 					}
 					for(DTLearning chld : children){
@@ -237,12 +249,12 @@ public class DTLearning{
 	}
 
 	private double informationGain(int attribute, List<String[]> dataset){
-		System.out.println("gaining info");
+		//System.out.println("gaining info");
 		double result = 0;
 		List<Integer> results = new ArrayList<Integer>(0);
 		List<List<String[]>> sorted = new ArrayList<List<String[]>>(0);
 		List<String> category = new ArrayList<String>(0);
-		int total = dataset.size(); 
+		int total = dataset.size()-1; 
 		String temp = null; //holds test stirngs
 		int count = 0; //holds indexes
 		boolean contanined = false;
@@ -268,11 +280,11 @@ public class DTLearning{
 		double hold;
 		for(List<String[]> sel : sorted){
 			hold = sel.size();
-			System.out.println("entropy sel: "+entropy(sel));
+			//System.out.println("entropy sel: "+entropy(sel));
 			sum = sum + ((hold/(double)total)*entropy(sel));
 		}
 		result = result - sum;
-		System.out.println("result is: "+result);
+		//System.out.println("result is: "+result);
 		return result;
 	}
 
@@ -299,9 +311,11 @@ public class DTLearning{
 				category.add(select[end]);
 			}
 		}
-		double I = 0;
+		double I = 0.0;
+		double frequency = 0.0;
 		for(double k : results){
-			I = I - (k/(double)total)*(Math.log(k/(double)total)/Math.log(2));
+			frequency = k/(double)total;
+			I = I - (frequency)*(Math.log(frequency)/Math.log(2));
 		}
 		return I;
 	}
