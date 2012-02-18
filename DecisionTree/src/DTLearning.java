@@ -39,6 +39,22 @@ public class DTLearning{
 		this.sb = parent.sb;
 		//System.out.println("created child!");
 	}
+	
+	public boolean match(String[] input){
+		if(this.terminal==true){
+			return this.pluralityValue.equals(input[input.length-1]);
+		}
+		if(children.isEmpty()){
+			return false;
+		}
+		String attrib = input[this.split];
+		for(DTLearning chld : this.children){
+			if(chld.attr.equals(attrib)){
+				match(removeAtr(input, this.split));
+			}
+		}
+		return false;
+	}
 
 	public void buildChildren(List<String[]> dataset, int attributes){
 		if(dataset.isEmpty()){
@@ -61,7 +77,7 @@ public class DTLearning{
 			
 		}
 		else{
-			System.out.println("important value: "+indexOfImportantAttribute);
+			//System.out.println("important value: "+indexOfImportantAttribute);
 			this.split = indexOfImportantAttribute;
 			this.terminal = false;
 			HashMap<String, Integer> attributeMap = countAttribute(indexOfImportantAttribute, dataset);
@@ -220,10 +236,10 @@ public class DTLearning{
 	 */
 
 	private int importance(List<String[]> dataset){
-		System.out.println("determining importance");
+//		System.out.println("determining importance");
 		int ret = 0;
 		int attributes = dataset.get(0).length-1;
-		System.out.println("Number of attributes = "+attributes);
+		//System.out.println("Number of attributes = "+attributes);
 		List<Double> Imps = new ArrayList<Double>(0);
 		int i = 0;
 		if(attributes!=0){
