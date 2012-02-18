@@ -50,7 +50,7 @@ public class DTLearning{
 		String attrib = input[this.split];
 		for(DTLearning chld : this.children){
 			if(chld.attr.equals(attrib)){
-				match(removeAtr(input, this.split));
+				match(input);
 			}
 		}
 		System.out.println("here");
@@ -85,6 +85,8 @@ public class DTLearning{
 			for(String atr : attributeMap.keySet()){
 				List<String[]> split = makeSplit(atr, indexOfImportantAttribute, dataset);
 				if(!split.isEmpty()){
+					System.out.println(dataset.get(0).length);
+					System.out.println(numOfAttributes-1);
 					DTLearning newChild = new DTLearning(dataset, numOfAttributes-1, this, atr);
 					this.children.add(newChild);
 				}
@@ -157,8 +159,8 @@ public class DTLearning{
 		List<String[]> resultList = new ArrayList<String[]>();
 		for(String[] row : dataset){
 			if(row[index].equals(value)){
-				String[] modifiedRow = removeAtr(row, index);
-				resultList.add(modifiedRow);
+				//String[] modifiedRow = removeAtr(row, index);
+				resultList.add(row);
 			}
 		}
 		return resultList;
