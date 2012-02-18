@@ -5,37 +5,70 @@ import java.util.*;
  * @author harry moreno
  *
  */
-public class DTLearning extends Node{
+public class DTLearning{
 	int numOfAttributes;
 	StringBuilder sb;
 	List<String[]> Dataset;
+	DTLearning parent;
+	List<DTLearning> children;
+	String pluralityValue;
+	int depth;
 
 	DTLearning(List<String[]> dataset, int attributes){
 		this.parent = null;
 		this.Dataset=dataset;
 		this.numOfAttributes = attributes;
-		this.children = new ArrayList<Node>();
+		this.children = new ArrayList<DTLearning>();
 		this.depth = 1;
-		sb = new StringBuilder();
-		classify(Dataset,attributes);
+		this.sb = new StringBuilder();
+		buildChildren(Dataset,attributes);
 	}
 
 	DTLearning(List<String[]> dataset, int attributes, DTLearning parent){
 		this.parent = parent;
 		this.numOfAttributes = attributes;
 		this.Dataset=dataset;
-		System.out.println("datset is: "+Dataset.get(0).length);
-		this.children = new ArrayList<Node>();
+		//System.out.println("datset is: "+Dataset.get(0).length);
+		this.children = new ArrayList<DTLearning>();
 		this.depth = parent.depth + 1;
+		this.sb = parent.sb;
 		//System.out.println("created child!");
 	}
 
 	public void buildChildren(List<String[]> dataset, int attributes){
-		
+		if(dataset.isEmpty()){
+			return;
+		}
+		if(sameClass(dataset)){
+			return;
+		}
+		if(dataset.get(0).length==1){
+			return;
+		}
+
+		int indexOfImportantAttribute = importance(dataset);
+		if(indexOfImportantAttribute == -1){
+			this.pluralityValue = finalResolution(dataset);
+		}
+		else{
+			System.out.println("important value: "+indexOfImportantAttribute);
+			HashMap<String, Integer> attributeMap = countAttribute(indexOfImportantAttribute, dataset);
+			for(String atr : attributeMap.keySet()){
+				List<String[]> split = makeSplit(atr, indexOfImportantAttribute, dataset);
+				if(!split.isEmpty()){
+					DTLearning newChild = new DTLearning(dataset, numOfAttributes-1, this);
+					this.children.add(newChild);
+				}
+				for(DTLearning chld : children){
+					chld.buildChildren(split, numOfAttributes-1);
+				}
+			}
+		}
+
 	}
-	
-	
-	
+
+
+
 	/**
 	 * runs the decision-tree-learning algorithm
 	 * @param dataset
@@ -48,6 +81,8 @@ public class DTLearning extends Node{
 				sb.append(" ");
 			}
 			sb.append(this.pluralityValue+"\n");
+			System.out.println("empty");
+			return;
 		}
 		else if(sameClass(dataset)){
 			String[] first = dataset.get(0);
@@ -55,7 +90,9 @@ public class DTLearning extends Node{
 			for(int i=0; i<depth-1; i++){
 				sb.append(" ");
 			}
+			System.out.println("terminate");
 			sb.append(this.pluralityValue+"\n");
+			return;
 		}
 		else{
 			int indexOfImportantAttribute = importance(dataset);
@@ -75,10 +112,13 @@ public class DTLearning extends Node{
 						DTLearning newChild = new DTLearning(dataset, numOfAttributes-1, this);
 						this.children.add(newChild);
 					}
-					classify(split, numOfAttributes-1);
+					for(DTLearning chld : children){
+						chld.classify(split, numOfAttributes-1);
+					}
 				}
 			}
 		}
+		return;
 	}
 	/**
 	 * returns a dataset without the splitting attribute
@@ -191,11 +231,13 @@ public class DTLearning extends Node{
 		}else{
 			ret = -1;
 		}
+		//System.out.println("ret IS: " + ret);
+
 		return ret;
 	}
 
 	private double informationGain(int attribute, List<String[]> dataset){
-		//System.out.println("gaining info");
+		System.out.println("gaining info");
 		double result = 0;
 		List<Integer> results = new ArrayList<Integer>(0);
 		List<List<String[]>> sorted = new ArrayList<List<String[]>>(0);
@@ -229,7 +271,7 @@ public class DTLearning extends Node{
 			sum = sum + ((hold/(double)total)*entropy(sel));
 		}
 		result = result - sum;
-		//System.out.println("result is: "+result);
+		System.out.println("result is: "+result);
 		return result;
 	}
 
@@ -311,7 +353,7 @@ public class DTLearning extends Node{
 		int lastindex = first.length;
 		String target = first[lastindex-1];
 		for(String[] row : dataset){
-			if(row[lastindex-1]!= target)
+			if(!row[lastindex-1].equals(target))
 				return false;
 		}
 		return true;

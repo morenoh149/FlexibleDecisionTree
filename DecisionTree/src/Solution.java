@@ -23,7 +23,7 @@ public class Solution {
 		CSVReader parser = new CSVReader(new FileReader(args[0]));
 		List<String[]> dataset = parser.readAll();
 		String[] header = dataset.get(0);
-		int numOfAttributes = header.length;
+		int numOfAttributes = header.length-1;
 		dataset = dataset.subList(1, dataset.size());
 		DTLearning algorithm = new DTLearning(dataset, numOfAttributes);
 		System.out.println(algorithm.toString());
