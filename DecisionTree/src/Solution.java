@@ -26,7 +26,7 @@ public class Solution {
 		String[] header = dataset.get(0);
 		int numOfAttributes = header.length-1;
 		dataset = dataset.subList(1, dataset.size());
-		DTLearning algorithm = new DTLearning(dataset, numOfAttributes);
+		DTLearning algorithm = new DTLearning(dataset);
 		System.out.println(algorithm.sb.toString());
 		
 		CSVReader testparser = new CSVReader(new FileReader(args[1]));

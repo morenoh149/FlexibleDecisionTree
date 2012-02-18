@@ -6,7 +6,6 @@ import java.util.*;
  *
  */
 public class DTLearning{
-	int numOfAttributes;
 	List<String[]> Dataset;
 	DTLearning parent;
 	List<DTLearning> children;
@@ -15,33 +14,37 @@ public class DTLearning{
 	StringBuilder sb;
 	int split;
 	String attr;
+	List<Integer> checked;
 	boolean terminal;
 
-	DTLearning(List<String[]> dataset, int attributes){
+	DTLearning(List<String[]> dataset){
 		this.parent = null;
 		this.Dataset=dataset;
-		this.numOfAttributes = attributes;
 		this.children = new ArrayList<DTLearning>();
 		this.depth = 1;
 		this.sb = new StringBuilder();
 		attr = null;
-		buildChildren(Dataset,attributes);
+		this.checked = new ArrayList<Integer>(0);
+		buildChildren();
 	}
 
-	DTLearning(List<String[]> dataset, int attributes, DTLearning parent, String attribute){
+	DTLearning(List<String[]> dataset, DTLearning parent, String attribute, List<Integer> check){
 		this.parent = parent;
-		this.numOfAttributes = attributes;
 		this.Dataset=dataset;
 		this.attr = attribute;
 		//System.out.println("datset is: "+Dataset.get(0).length);
 		this.children = new ArrayList<DTLearning>();
 		this.depth = parent.depth + 1;
 		this.sb = parent.sb;
+		this.checked = check;
+//		System.out.println(checked.size());
 		//System.out.println("created child!");
 	}
-	
+
 	public boolean match(String[] input){
+//		System.out.println("Let's look at a node");
 		if(this.terminal==true){
+//			System.out.println("ITS terminal! and its pluratlity is :" + this.pluralityValue + " And our final is : " + input[input.length-1]);
 			return this.pluralityValue.equals(input[input.length-1]);
 		}
 		if(children.isEmpty()){
@@ -50,107 +53,70 @@ public class DTLearning{
 		String attrib = input[this.split];
 		for(DTLearning chld : this.children){
 			if(chld.attr.equals(attrib)){
-				match(input);
+				return chld.match(input);
 			}
 		}
-		System.out.println("here");
+		//System.out.println("here");
 		return false;
 	}
 
-	public void buildChildren(List<String[]> dataset, int attributes){
-		if(dataset.isEmpty()){
+	public void buildChildren(){
+		if(sameClass(this.Dataset)){
 			this.terminal=true;
+			this.pluralityValue = this.Dataset.get(0)[this.Dataset.get(0).length-1];
+//			System.out.println("same data term");
+//			for(String[] test : Dataset){
+//				System.out.println(test[test.length-1]);
+//			}
+//			System.out.println("+ checked +");
+//			System.out.println("PLURALITY VALUE : " + this.pluralityValue);
 			return;
 		}
-		if(sameClass(dataset)){
-			this.terminal=true;
-			return;
-		}
-		if(dataset.get(0).length==1){
-			this.terminal = true;
-			return;
-		}
-		
-		int indexOfImportantAttribute = importance(dataset);
+
+		int indexOfImportantAttribute = importance(this.Dataset, this.checked);
 		if(indexOfImportantAttribute == -1){
-			this.pluralityValue = finalResolution(dataset);
+			System.out.println("important stop");
+			this.pluralityValue = finalResolution(this.Dataset);
 			this.terminal = true;
-			
+			return;
+
 		}
 		else{
-			//System.out.println("important value: "+indexOfImportantAttribute);
-			this.split = indexOfImportantAttribute;
-			this.terminal = false;
-			HashMap<String, Integer> attributeMap = countAttribute(indexOfImportantAttribute, dataset);
-			for(String atr : attributeMap.keySet()){
-				List<String[]> split = makeSplit(atr, indexOfImportantAttribute, dataset);
+			this.split=indexOfImportantAttribute;
+			this.terminal=false;
+			List<String> attributes = getAttributes(this.split, this.Dataset);
+			for(String atr : attributes){
+				List<String[]> split = makeSplit(atr, indexOfImportantAttribute, this.Dataset);
 				if(!split.isEmpty()){
-					System.out.println(dataset.get(0).length);
-					System.out.println(numOfAttributes-1);
-					DTLearning newChild = new DTLearning(dataset, numOfAttributes-1, this, atr);
+					//System.out.println(dataset.get(0).length);
+					List<Integer> list = new ArrayList<Integer>(this.checked);
+					
+					list.add(indexOfImportantAttribute);
+//					System.out.println("splitting" + atr + " : " + this.checked.size());
+					DTLearning newChild = new DTLearning(new ArrayList<String[]>(split), this, atr, list);
 					this.children.add(newChild);
 				}
-				for(DTLearning chld : children){
-					chld.buildChildren(split, numOfAttributes-1);
-				}
 			}
-		}
+//			System.out.println(this.children.size());
+			
+			for(DTLearning chld : this.children){
+				chld.buildChildren();
+			}
 
+		}
 	}
 
 
-
-	/**
-	 * runs the decision-tree-learning algorithm
-	 * @param dataset
-	 * @param attributes
-	 */
-	void classify(List<String[]> dataset, int attributes){
-		if(dataset.isEmpty()){
-			this.pluralityValue = parent.pluralityValue;
-			for(int i=0; i<depth-1; i++){
-				sb.append("-");
-			}
-			sb.append(this.pluralityValue+"\n");
-			System.out.println("empty");
-			return;
-		}
-		else if(sameClass(dataset)){
-			String[] first = dataset.get(0);
-			this.pluralityValue = first[first.length-1];
-			for(int i=0; i<depth-1; i++){
-				sb.append("-");
-			}
-			System.out.println("terminate");
-			sb.append(this.pluralityValue+"\n");
-			return;
-		}
-		else{
-			int indexOfImportantAttribute = importance(dataset);
-			if(indexOfImportantAttribute == -1){
-				this.pluralityValue = finalResolution(dataset);
-				for(int i=0; i<depth-1; i++){
-					sb.append("-");
-				}
-				sb.append("majority decision"+this.pluralityValue+"\n");
-			}
-			else{
-				System.out.println("important value: "+indexOfImportantAttribute);
-				HashMap<String, Integer> attributeMap = countAttribute(indexOfImportantAttribute, dataset);
-				for(String atr : attributeMap.keySet()){
-					List<String[]> split = makeSplit(atr, indexOfImportantAttribute, dataset);
-					if(!split.isEmpty()){
-						DTLearning newChild = new DTLearning(dataset, numOfAttributes-1, this, attr);
-						this.children.add(newChild);
-					}
-					for(DTLearning chld : children){
-						chld.classify(split, numOfAttributes-1);
-					}
-				}
+	private List<String> getAttributes(int index, List<String[]> dataset){
+		List<String> output = new ArrayList<String>(0);
+		for(String[] sel : dataset){
+			if(!output.contains(sel[index])){
+				output.add(sel[index]);
 			}
 		}
-		return;
+		return output;
 	}
+
 	/**
 	 * returns a dataset without the splitting attribute
 	 * returns and empty list if no row with that attribute found
@@ -238,16 +204,20 @@ public class DTLearning{
 	 * on that attribute
 	 */
 
-	private int importance(List<String[]> dataset){
-//		System.out.println("determining importance");
+	private int importance(List<String[]> dataset, List<Integer> checked){
+		//		System.out.println("determining importance");
 		int ret = 0;
 		int attributes = dataset.get(0).length-1;
 		//System.out.println("Number of attributes = "+attributes);
 		List<Double> Imps = new ArrayList<Double>(0);
+		List<Integer> Indexes = new ArrayList<Integer>(0);
 		int i = 0;
-		if(attributes!=0){
+		if(attributes!=checked.size()){
 			while(i<attributes){
-				Imps.add(informationGain(i, dataset));
+				if(!checked.contains(i)){
+					Imps.add(informationGain(i, dataset));
+					Indexes.add(i);
+				}
 				i++;
 			}
 			double max = Imps.get(0);
@@ -255,7 +225,7 @@ public class DTLearning{
 			for(double test : Imps){
 				if(test>max){
 					max = test;
-					ret = count;
+					ret = Indexes.get(count);
 				}
 				count++;
 			}
@@ -273,7 +243,7 @@ public class DTLearning{
 		List<Integer> results = new ArrayList<Integer>(0);
 		List<List<String[]>> sorted = new ArrayList<List<String[]>>(0);
 		List<String> category = new ArrayList<String>(0);
-		int total = dataset.size()-1; 
+		int total = dataset.size(); 
 		String temp = null; //holds test stirngs
 		int count = 0; //holds indexes
 		boolean contanined = false;
@@ -386,6 +356,7 @@ public class DTLearning{
 		String[] first = dataset.get(0);
 		int lastindex = first.length;
 		String target = first[lastindex-1];
+//		System.out.println(target);
 		for(String[] row : dataset){
 			if(!row[lastindex-1].equals(target))
 				return false;
