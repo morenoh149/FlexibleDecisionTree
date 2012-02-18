@@ -12,6 +12,7 @@ public class DTLearning{
 	List<DTLearning> children;
 	String pluralityValue;
 	int depth;
+	StringBuilder sb;
 
 	DTLearning(List<String[]> dataset, int attributes){
 		this.parent = null;
