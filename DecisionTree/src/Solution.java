@@ -16,7 +16,7 @@ import au.com.bytecode.opencsv.CSVReader;
 public class Solution {
 	
 	public static void main(String[] args) throws IOException {
-		if (args.length < 1) {
+		if(args.length < 2) {
 		    System.out.println("Usage: missing filename");
 		    return;
 		}
@@ -26,8 +26,13 @@ public class Solution {
 		String[] header = dataset.get(0);
 		int numOfAttributes = header.length-1;
 		dataset = dataset.subList(1, dataset.size());
-		
 		DTLearning algorithm = new DTLearning(dataset, numOfAttributes);
 		System.out.println(algorithm.sb.toString());
+		
+		CSVReader testparser = new CSVReader(new FileReader(args[1]));
+		List<String[]> testset = testparser.readAll();
+		for(String[] row : testset){
+			System.out.println(algorithm.match(row));
+		}
 	}
 }
