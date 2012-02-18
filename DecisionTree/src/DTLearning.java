@@ -7,7 +7,6 @@ import java.util.*;
  */
 public class DTLearning{
 	int numOfAttributes;
-	StringBuilder sb;
 	List<String[]> Dataset;
 	DTLearning parent;
 	List<DTLearning> children;
@@ -78,7 +77,7 @@ public class DTLearning{
 		if(dataset.isEmpty()){
 			this.pluralityValue = parent.pluralityValue;
 			for(int i=0; i<depth-1; i++){
-				sb.append(" ");
+				Solution.sb.append("-");
 			}
 			sb.append(this.pluralityValue+"\n");
 			System.out.println("empty");
@@ -88,7 +87,7 @@ public class DTLearning{
 			String[] first = dataset.get(0);
 			this.pluralityValue = first[first.length-1];
 			for(int i=0; i<depth-1; i++){
-				sb.append(" ");
+				Solution.sb.append("-");
 			}
 			System.out.println("terminate");
 			sb.append(this.pluralityValue+"\n");
@@ -99,9 +98,9 @@ public class DTLearning{
 			if(indexOfImportantAttribute == -1){
 				this.pluralityValue = finalResolution(dataset);
 				for(int i=0; i<depth-1; i++){
-					sb.append(" ");
+					Solution.sb.append("-");
 				}
-				sb.append(this.pluralityValue+"\n");
+				Solution.sb.append("majority decision"+this.pluralityValue+"\n");
 			}
 			else{
 				System.out.println("important value: "+indexOfImportantAttribute);
@@ -268,6 +267,7 @@ public class DTLearning{
 		double hold;
 		for(List<String[]> sel : sorted){
 			hold = sel.size();
+			System.out.println("entropy sel: "+entropy(sel));
 			sum = sum + ((hold/(double)total)*entropy(sel));
 		}
 		result = result - sum;
@@ -357,12 +357,5 @@ public class DTLearning{
 				return false;
 		}
 		return true;
-	}
-	/**
-	 * returns string representation of the current node
-	 * best run on the root
-	 */
-	public String toString(){
-		return sb.toString();
 	}
 }
